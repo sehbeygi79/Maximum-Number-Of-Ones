@@ -2,19 +2,20 @@ import numpy as np
 
 
 def find_pivot_row(column, i):
-    # return np.argmax(column[i:] != 0) + i
     return np.argmax(column[i:] != False) + i
 
 
 def clean_column(matrix, pivot_position):
     row_count, _ = matrix.shape
-    # matrix[pivot_position[0]] /= matrix[pivot_position]
 
     for i in range(row_count):
         if i == pivot_position[0] or matrix[i, pivot_position[1]] == 0:
             continue
-        # matrix[i] -= matrix[i, pivot_position[1]] * matrix[pivot_position[0]]
         matrix[i] ^= matrix[pivot_position[0]]
+
+        # alternative ways to calculate xor
+        # matrix[i] = matrix[i] != matrix[pivot_position[0]]
+        # matrix[i] = np.logical_xor(matrix[i], matrix[pivot_position[0]])
 
 
 def gauss_jordan(coef_matrix, aug_matrix=None):
@@ -39,6 +40,7 @@ def gauss_jordan(coef_matrix, aug_matrix=None):
 
     return augmented_matrix
 
+
 # input must be in row reduced echelon form
 def calc_rank(rref_matrix):
     rank = 0
@@ -46,6 +48,7 @@ def calc_rank(rref_matrix):
         leading_entry_index = np.argmax(row != False)
         rank += 1 if row[leading_entry_index] else 0
     return rank
+
 
 n, m = list(map(int, input().split()))
 A = []
@@ -55,7 +58,7 @@ A = np.asarray(A, dtype=bool)
 
 if np.all(A == 0):
     # all zero matrix
-    print(m*n)
+    print(0)
 else:
     min_num_of_zeros = calc_rank((gauss_jordan(A))) - 1
-    print(m*n - min_num_of_zeros)
+    print(m * n - min_num_of_zeros)
